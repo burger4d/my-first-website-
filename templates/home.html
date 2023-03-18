@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+</head>
+<body>
+    <style>
+      body {
+        background-image: url("{{ url_for('static', filename='home.gif') }}");
+        background-position: center;
+      }
+      
+      h1 {
+        color: red;
+      }
+       {
+        color: red;
+      }
+    </style>
+    <h1>a totally random website</h1>
+    <p>(or not?)</p>
+    <form action="/game">
+         <button type="submit">Click here</button>
+</body>
+</html>

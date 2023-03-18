@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>little game</title>
+    <style>
+    canvas {
+            border: 1px solid white;
+        }
+    body {
+        background-color:black;
+      }
+    #play-again {
+        display: none;
+    }
+    </style>
+</head>
+<body>
+    <canvas id="Canvas"></canvas>
+    <button id="play-again" onclick="restart()">Play Again</button>
+
+    <script>
+        var canvas = document.getElementById("Canvas");
+        var ctx = canvas.getContext("2d");
+
+        var x = 130;
+        var y = 200;
+        var ySpeed = 0; // player
+        var xSpeed = 2; //cactus
+        var gravity = 0.7;
+        var acceleration = 0.001;
+        canvas.width = window.innerWidth-10;
+
+        let coord = [];
+        for (var i = 250; i < canvas.width - 10; i++){
+            if (Math.random()<=0.015){
+                coord.push(i);
+                i+=70;
+            }
+        }
+
+        function collision(){
+            for (var i = 0; i < coord.length; i++){
+                var X = coord[i];
+                var Y = 120;
+                if (x+10>X && x<X && y>Y-25){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function drawCactus() {
+            for (var i = 0; i < coord.length; i++) {
+                ctx.fillStyle = "green";
+                ctx.fillRect(coord[i], 125, 10, 25);
+                coord[i] -= Math.floor(xSpeed);
+            }
+            if (coord[1] < 0) {
+                coord.shift();
+                coord.push(canvas.width - 10);
+            }
+        }
+
+        function drawSquare() {
+            ctx.fillStyle = "red";
+            ctx.fillRect(x, y, 10, 10);
+        }
+
+        function update() {
+            if (xSpeed>=5){
+                xSpeed = 5;
+            }
+            else{
+                xSpeed += acceleration;
+            }
+            ySpeed += gravity;
+            y += ySpeed;
+            if (y + 10 > canvas.height) {
+                y = canvas.height - 10;
+                ySpeed = 0;
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCactus();
+            drawSquare();
+            if (collision()){
+                update();
+                drawCactus();
+                drawSquare();
+                document.getElementById("play-again").style.display = "block";
+                return 0;
+            }
+            else{
+                update();
+                requestAnimationFrame(animate);
+            }
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if ((event.code === "ArrowUp" ||event.code == "Space") && y>=canvas.height-10) {
+                ySpeed -= 10;
+            }
+        });
+        canvas.addEventListener("mousedown", function() {
+            if (ySpeed == 0 && y>=canvas.height-10){
+                ySpeed = -10;
+            }
+        });
+
+        function restart(){
+            window.location.reload();
+        }
+
+        animate();
+    </script>
+ <img src="{{ url_for('static', filename='background.gif') }}" alt="background image">
+</body>
+</html>
